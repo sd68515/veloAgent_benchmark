@@ -316,7 +316,9 @@ class CellModel(mesa.Model):
         # Use sklearn NearestNeighbors with radius (euclidean)
         nbrs = NearestNeighbors(radius=self.nbr_radius, metric='euclidean', n_jobs=-1)
         nbrs.fit(coords)
-        indices_list, dists_list = nbrs.radius_neighbors(coords, return_distance=True)
+        # sklearn returns (distances, indices) when return_distance=True.
+        # Keep both arrays aligned so spatial weights use actual distances.
+        dists_list, indices_list = nbrs.radius_neighbors(coords, return_distance=True)
 
         print("Attaching neighbor lists and inverse-distance weights to agents...")
         # attach neighbors + inverse-distance weights
